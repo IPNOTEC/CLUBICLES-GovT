@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLUBICLES - Future of Collaborative Workspaces</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --neon-blue: #0ff0fc;
+            --neon-purple: #bc13fe;
+            --neon-green: #39ff14;
+            --dark-bg: #000000;
+            --darker-bg: #030303;
+            --grid-color: rgba(11, 218, 255, 0.1);
+            --text-glow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+            
+            /* Presentation Colors */
+            --primary: #8F00FF;
+            --secondary: #0070B0;
+            --accent: #45DE10;
+            --highlight: #FF6900;
+            --white: #FFFFFF;
+            --grey: #707070;
+            --light-grey: #AAAAAA;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+            font-weight: 400;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--white);
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(11, 218, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(188, 19, 254, 0.05) 0%, transparent 20%);
+        }
+        
+        /* Loading Animation */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--darker-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease-out;
+        }
+        
+        .loading-logo {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: var(--text-glow);
+            color: var(--neon-blue);
+        }
+        
+        .loading-subtitle {
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            margin-bottom: 3rem;
+            color: var(--neon-green);
+        }
+        
+        .loading-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(11, 218, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(11, 218, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .loading-bar-container {
+            width: 70%;
+            max-width: 500px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 10px;
+            box-shadow: 0 0 15px var(--neon-blue);
+            transition: width 3s ease-in-out;
+        }
+        
+        .loading-status {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--neon-purple);
+        }
+        
+        .glow-border {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            box-shadow: 
+                inset 0 0 20px var(--neon-blue),
+                inset 0 0 30px var(--neon-purple),
+                0 0 50px var(--neon-blue);
+            border-radius: 5px;
+            animation: glow-pulse 3s infinite alternate;
+            pointer-events: none;
+        }
+        
+        @keyframes glow-pulse {
+            0% { box-shadow: inset 0 0 10px var(--neon-blue), inset 0 0 20px var(--neon-purple), 0 0 30px var(--neon-blue); }
+            100% { box-shadow: inset 0 0 20px var(--neon-blue), inset 0 0 40px var(--neon-purple), 0 0 60px var(--neon-blue); }
+        }
+        
+        /* Main Content */
+        #mainContent {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+            max-width: 1280px; /* 16:9 aspect ratio width */
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header */
+        header {
+            position: relative;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .clubicles-logo {
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--primary);
+            position: relative;
+            text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+            animation: logoGlow 3s infinite alternate;
+        }
+        
+        @keyframes logoGlow {
+            0% { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary); }
+            100% { text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary), 0 0 60px var(--secondary); }
+        }
+
+        .tagline {
+            font-size: 1.8rem;
+            color: var(--white);
+            margin-bottom: 2rem;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border: 1px solid var(--grey);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 18px 20px;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            color: var(--primary);
+        }
+
+        .tab:nth-child(2) { color: var(--secondary); }
+        .tab:nth-child(3) { color: var(--accent); }
+        .tab:nth-child(4) { color: var(--highlight); }
+        .tab:nth-child(5) { color: var(--neon-blue); }
+        .tab:nth-child(6) { color: var(--neon-green); }
+        .tab:nth-child(7) { color: var(--neon-purple); }
+        .tab:nth-child(8) { color: #FF44CC; }
+        .tab:nth-child(9) { color: #FF9900; }
+        .tab:nth-child(10) { color: #FF4444; }
+
+        .tab:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: currentColor;
+            transform: translateY(4px);
+            transition: all 0.3s ease;
+            z-index: -1;
+        }
+
+        .tab:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .tab.active {
+            background: rgba(26, 26, 26, 0.7);
+            color: var(--white) !important;
+        }
+
+        .tab.active:after {
+            transform: translateY(0);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            transition: border-color 0.5s ease;
+            min-height: 576px; /* 16:9 aspect ratio height */
+            padding: 30px;
+            position: relative;
+            background: rgba(20, 25, 45, 0.7);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tab-specific border colors */
+        #problem.active { border-color: var(--primary); }
+        #solution.active { border-color: var(--secondary); }
+        #readiness.active { border-color: var(--accent); }
+        #impact.active { border-color: var(--highlight); }
+        #market.active { border-color: var(--neon-blue); }
+        #business.active { border-color: var(--neon-green); }
+        #revenue.active { border-color: var(--neon-purple); }
+        #financials.active { border-color: #FF44CC; }
+        #milestones.active { border-color: #FF9900; }
+        #budget.active { border-color: #FF4444; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Card Styles */
+        .card {
+            background: rgba(30, 30, 50, 0.7);
+            border: 1px solid rgba(150, 150, 150, 0.3);
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: var(--primary);
+        }
+
+        .card h2 i {
+            margin-right: 15px;
+            font-size: 2.0rem;
+            width: 40px;
+            text-align: center;
+            color: var(--accent);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: var(--highlight);
+            border-bottom: 1px solid var(--highlight);
+            padding-bottom: 5px;
+        }
+        
+        /* Content styles */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .value-card {
+            background: rgba(40, 40, 60, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+        
+        .value-card h4 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: var(--accent) !important;
+        }
+        
+        .currency {
+            color: var(--neon-green);
+            font-weight: bold;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+            font-size: 1.1rem;
+            color: var(--white);
+        }
+        
+        li:before {
+            content: "■";
+            position: absolute;
+            left: 0;
+            color: var(--grey);
+            font-size: 1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1rem;
+        }
+        
+        th, td {
+            border: 1px solid var(--grey);
+            padding: 10px;
+            text-align: left;
+            color: var(--white);
+        }
+        
+        th {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--white);
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin: 20px auto;
+        }
+        
+        .source {
+            font-size: 0.8rem;
+            color: var(--light-grey);
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .mvp-demo {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .demo-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(143, 0, 255, 0.5);
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(143, 0, 255, 0.7);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1 0 25%;
+                font-size: 1rem;
+                padding: 15px 10px;
+            }
+            
+            .clubicles-logo { font-size: 3rem; }
+            .tagline { font-size: 1.3rem; }
+        }
+
+        @media (max-width: 768px) {
+            .tab {
+                flex: 1 0 33%;
+                padding: 12px 8px;
+                font-size: 0.9rem;
+            }
+            
+            .clubicles-logo { font-size: 2.5rem; }
+            .card h2 { font-size: 1.5rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .tab {
+                flex: 1 0 50%;
+                padding: 10px 5px;
+                font-size: 0.8rem;
+            }
+            
+            .clubicles-logo { font-size: 2rem; }
+            .card h2 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingScreen">
+        <div class="loading-grid"></div>
+        <div class="glow-border"></div>
+        <div class="loading-logo">CLUBICLES</div>
+        <div class="loading-subtitle">LOADING FUTURE OF WORK</div>
+        <div class="loading-bar-container">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+        <div class="loading-status" id="loadingStatus">Initializing workspace ecosystem...</div>
+    </div>
+
+    <div id="mainContent">
+        <header>
+            <div class="logo-container">
+                <div class="clubicles-logo">CLUBICLES</div>
+            </div>
+            <div class="tagline">THE FUTURE OF COLLABORATIVE WORKSPACES</div>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="problem">Problem</div>
+            <div class="tab" data-tab="solution">Solution</div>
+            <div class="tab" data-tab="readiness">Readiness</div>
+            <div class="tab" data-tab="impact">Impact</div>
+            <div class="tab" data-tab="market">Market</div>
+            <div class="tab" data-tab="business">Business Model</div>
+            <div class="tab" data-tab="revenue">Revenue Model</div>
+            <div class="tab" data-tab="financials">Financials</div>
+            <div class="tab" data-tab="milestones">Milestones</div>
+            <div class="tab" data-tab="budget">Budget</div>
+        </div>
+        
+        <!-- Problem Statement -->
+        <div class="tab-content active" id="problem">
+            <div class="card">
+                <h2><i class="fas fa-exclamation-circle"></i> Problem Statement</h2>
+                <p>Traditional workspace models fail to meet the needs of modern professionals, creating significant inefficiencies:</p>
+                
+                <div class="grid">
+                    <div class="value-card">
+                        <h4>Space Inefficiency</h4>
+                        <p>40% of commercial space sits empty during business hours<span class="source">(JLL Research, 2023)</span></p>
+                    </div>
+                    <div class="value-card">
+                        <h4>High Costs</h4>
+                        <p>Traditional office space costs businesses ₹15,000-₹25,000 per employee annually<span class="source">(CBRE, 2023)</span></p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Lack of Flexibility</h4>
+                        <p>82% of freelancers report difficulty finding affordable, professional workspaces<span class="source">(FlexJobs Survey, 2023)</span></p>
+                    </div>
+                </div>
+                
+                <h3>Current Solutions Fall Short</h3>
+                <ul>
+                    <li>Traditional co-working spaces require long-term commitments and are often centrally located, increasing commute times</li>
+                    <li>Remote work leads to isolation and reduced collaboration</li>
+                    <li>Cafés and home offices lack professional infrastructure and networking opportunities</li>
+                    <li>Existing solutions don't effectively utilize the 15M+ sq ft of underutilized commercial space in Bengaluru alone<span class="source">(Knight Frank Research)</span></li>
+                </ul>
+                
+                <h3>Environmental Impact</h3>
+                <p>Daily commuting contributes significantly to urban carbon emissions, with the average professional generating 2.5 tons of CO2 annually from travel alone<span class="source">(CEEW Study, 2023)</span>.</p>
+            </div>
+        </div>
+        
+        <!-- Solution -->
+        <div class="tab-content" id="solution">
+            <div class="card">
+                <h2><i class="fas fa-lightbulb"></i> Solution - The CLUBICLES Innovation</h2>
+                <p>CLUBICLES revolutionizes workspace access through a hyperlocal, subscription-based platform that connects professionals with underutilized spaces.</p>
+                
+                <div class="grid">
+                    <div class="value-card">
+                        <h4>Space Aggregation</h4>
+                        <p>We aggregate small and underutilized workspaces into a seamless network</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Smart Matching</h4>
+                        <p>AI-powered algorithm matches professionals with ideal workspaces based on preferences and location</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Flexible Access</h4>
+                        <p>Hourly, daily, weekly, or monthly plans with no long-term commitments</p>
+                    </div>
+                </div>
+                
+                <h3>Unique Differentiators</h3>
+                <ul>
+                    <li><span class="highlight">Hyperlocal Network:</span> 15-minute workspace access versus industry average of 45+ minutes</li>
+                    <li><span class="highlight">Community Ownership:</span> Members can invest and receive a share of profits</li>
+                    <li><span class="highlight">Sustainability Focus:</span> 50% reduction in CO2 emissions by reducing commute times</li>
+                    <li><span class="highlight">Direction-Based Booking:</span> Unique visual interface showing available spaces by compass direction</li>
+                    <li><span class="highlight">Profit Sharing:</span> Space owners keep 70% of revenue, creating win-win partnerships</li>
+                </ul>
+                
+                <h3>Target Customers</h3>
+                <div class="grid">
+                    <div class="value-card">
+                        <h4>Freelancers</h4>
+                        <p>42M+ in India seeking professional workspaces without long-term commitments</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Remote Workers</h4>
+                        <p>30% of Indian workforce now working remotely at least part-time</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Startups</h4>
+                        <p>90K+ startups in India needing flexible scaling options</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Readiness Level -->
+        <div class="tab-content" id="readiness">
+            <div class="card">
+                <h2><i class="fas fa-flask"></i> Solution Readiness Level</h2>
+                <p>CLUBICLES has progressed beyond concept stage with a functional MVP and early market validation.</p>
+                
+                <h3>Current Stage: MVP / Early Traction</h3>
+                <ul>
+                    <li>Platform architecture and booking system developed</li>
+                    <li>Initial partnerships with 15+ spaces in Bengaluru</li>
+                    <li>Beta testing with 200+ users</li>
+                    <li>First revenue generated through pilot program</li>
+                </ul>
+                
+                <div class="mvp-demo">
+                    <h3>Experience Our MVP</h3>
+                    <a href="https://youtu.be/ZnvSFcBLtY4?si=UtifWQEnBYTr_SDY" target="_blank" class="demo-button">
+                        <i class="fas fa-external-link-alt"></i> View Live Prototype
+                    </a>
+                </div>
+                
+                <h3>Technology Readiness Level</h3>
+                <div class="grid">
+                    <div class="value-card">
+                        <h4>Platform Development</h4>
+                        <p>Web and mobile applications with real-time booking system</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Occupancy Tracking</h4>
+                        <p>IoT sensors for real-time space utilization data</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>AI Matching Algorithm</h4>
+                        <p>Proprietary algorithm for optimal workspace recommendations</p>
+                    </div>
+                </div>
+                
+                <h3>Development Roadmap</h3>
+                <table>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeline</th>
+                        <th>Key Features</th>
+                    </tr>
+                    <tr>
+                        <td>MVP Launch</td>
+                        <td>Q2 2024</td>
+                        <td>Basic booking, payment integration, partner onboarding</td>
+                    </tr>
+                    <tr>
+                        <td>Feature Expansion</td>
+                        <td>Q4 2024</td>
+                        <td>Community features, event management, advanced analytics</td>
+                    </tr>
+                    <tr>
+                        <td>Scale</td>
+                        <td>2025</td>
+                        <td>Multi-city expansion, corporate solutions, API integrations</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Impact -->
+        <div class="tab-content" id="impact">
+            <div class="card">
+                <h2><i class="fas fa-globe-asia"></i> Socio-Economic Impact</h2>
+                <p>CLUBICLES creates significant positive impact across multiple dimensions:</p>
+                
+                <h3>Environmental Benefits</h3>
+                <div class="grid">
+                    <div class="value-card">
+                        <h4>CO2 Reduction</h4>
+                        <p>50% reduction in commute-related emissions through hyperlocal access</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Space Efficiency</h4>
+                        <p>70%+ utilization rate versus industry average of 40-50%</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Sustainable Practices</h4>
+                        <p>Green building standards and waste reduction initiatives</p>
+                    </div>
+                </div>
+                
+                <h3>Economic Impact</h3>
+                <ul>
+                    <li><span class="highlight">Job Creation:</span> 500+ direct and indirect jobs in Karnataka within 3 years</li>
+                    <li><span class="highlight">Space Owner Revenue:</span> ₹35,000+ monthly additional income for space partners</li>
+                    <li><span class="highlight">Cost Savings:</span> 40% average savings for professionals compared to traditional options</li>
+                    <li><span class="highlight">Local Economy Boost:</span> Increased footfall and spending in neighborhood businesses</li>
+                </ul>
+                
+                <h3>Social Impact</h3>
+                <ul>
+                    <li>Fosters community and collaboration among professionals</li>
+                    <li>Supports work-life balance through reduced commute times</li>
+                    <li>Democratizes access to quality workspaces across economic segments</li>
+                    <li>Promotes inclusive growth through tier 2/3 city expansion</li>
+                </ul>
+                
+                <h3>Alignment with UN SDGs</h3>
+                <p>CLUBICLES directly contributes to Sustainable Development Goals 8 (Decent Work), 9 (Industry Innovation), 11 (Sustainable Cities), and 13 (Climate Action).</p>
+            </div>
+        </div>
+        
+        <!-- Market Landscape -->
+        <div class="tab-content" id="market">
+            <div class="card">
+                <h2><i class="fas fa-chart-bar"></i> Market Landscape</h2>
+                <p>The global co-working market presents substantial growth opportunities:</p>
+                
+                <div class="grid">
+                    <div class="value-card">
+                        <h4>Total Addressable Market (TAM)</h4>
+                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">$29.7B</span></p>
+                        <p style="text-align: center;">Global co-working market (2023)<span class="source">(Global Market Insights)</span></p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Serviceable Available Market (SAM)</h4>
+                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">$6.2B</span></p>
+                        <p style="text-align: center;">Indian flexible workspace market<span class="source">(JLL Report, 2023)</span></p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Serviceable Obtainable Market (SOM)</h4>
+                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">$125M</span></p>
+                        <p style="text-align: center;">Year 1-3 target market<span class="source">(CLUBICLES Projections)</span></p>
+                    </div>
+                </div>
+                
+                <h3>Competitive Analysis</h3>
+                <table>
+                    <tr>
+                        <th>Competitor</th>
+                        <th>Market Position</th>
+                        <th>Differentiation</th>
+                    </tr>
+                    <tr>
+                        <td>WeWork</td>
+                        <td>Premium global brand</td>
+                        <td>Centralized large spaces, high cost</td>
+                    </tr>
+                    <tr>
+                        <td>Awfis</td>
+                        <td>National presence</td>
+                        <td>Traditional membership model</td>
+                    </tr>
+                    <tr>
+                        <td>91Springboard</td>
+                        <td>Community focus</td>
+                        <td>Limited to major hubs</td>
+                    </tr>
+                    <tr>
+                        <td>CLUBICLES</td>
+                        <td>Hyperlocal aggregator</td>
+                        <td>15-min access, community ownership, sustainability focus</td>
+                    </tr>
+                </table>
+                
+                <h3>Market Growth Drivers</h3>
+                <ul>
+                    <li>10.6% CAGR in global co-working market (2023-2032)<span class="source">(Market Research Future)</span></li>
+                    <li>30% of Indian workforce now remote/hybrid</li>
+                    <li>15M+ freelancers in India seeking flexible workspaces</li>
+                    <li>Post-pandemic shift toward distributed work models</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Business Model -->
+        <div class="tab-content" id="business">
+            <div class="card">
+                <h2><i class="fas fa-cubes"></i> Business Model & Strategy</h2>
+                <p>CLUBICLES operates an asset-light marketplace model connecting space owners with professionals.</p>
+                
+                <h3>Target Customers</h3>
+                <div class="grid">
+                    <div class="value-card">
+                        <h4>Freelancers & Remote Workers</h4>
+                        <p>Professionals seeking flexible, affordable workspace near their locations</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Startups & SMBs</h4>
+                        <p>Growing companies needing flexible scaling options without long leases</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Enterprise Teams</h4>
+                        <p>Distributed teams requiring occasional collaboration spaces</p>
+                    </div>
+                </div>
+                
+                <h3>Value Proposition</h3>
+                <ul>
+                    <li><span class="highlight">For Professionals:</span> Affordable, flexible access to quality workspaces within 15 minutes</li>
+                    <li><span class="highlight">For Space Owners:</span> Monetization of underutilized assets with minimal effort</li>
+                    <li><span class="highlight">For Communities:</span> Reduced traffic congestion, environmental benefits, economic stimulation</li>
+                </ul>
+                
+                <h3>Sales & Distribution Channels</h3>
+                <ul>
+                    <li>Direct digital marketing through social media and search</li>
+                    <li>Partnerships with co-working associations and real estate groups</li>
+                    <li>Corporate partnerships for bulk membership plans</li>
+                    <li>Referral programs and community events</li>
+                </ul>
+                
+                <h3>Key Partners</h3>
+                <ul>
+                    <li>Commercial real estate owners and managers</li>
+                    <li>Café and restaurant partners with unused space</li>
+                    <li>Technology providers for IoT and platform infrastructure</li>
+                    <li>Payment processors and financial institutions</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Revenue Model -->
+        <div class="tab-content" id="revenue">
+            <div class="card">
+                <h2><i class="fas fa-money-bill-wave"></i> Revenue Model</h2>
+                <p>CLUBICLES generates revenue through multiple streams with a focus on subscription models.</p>
+                
+                <h3>Pricing Strategy</h3>
+                <div class="grid">
+                    <div class="value-card">
+                        <h4>3-Hour Pass</h4>
+                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">₹1001</span></p>
+                        <p style="text-align: center;">Casual users and trial customers</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Monthly Membership</h4>
+                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">₹10,001</span></p>
+                        <p style="text-align: center;">Regular users (~20% discount vs daily rate)</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Annual Membership</h4>
+                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">₹1,00,001</span></p>
+                        <p style="text-align: center;">Dedicated users (~30% discount vs monthly)</p>
+                    </div>
+                </div>
+                
+                <h3>Revenue Streams</h3>
+                <ul>
+                    <li><span class="highlight">Membership Fees (65%):</span> Subscription revenue from individual professionals</li>
+                    <li><span class="highlight">Corporate Plans (20%):</span> Bulk membership packages for organizations</li>
+                    <li><span class="highlight">Transaction Fees (10%):</span> Commission on space bookings</li>
+                    <li><span class="highlight">Value-added Services (5%):</span> Event hosting, meeting room bookings, catering</li>
+                </ul>
+                
+                <h3>Customer Lifetime Value (LTV)</h3>
+                <ul>
+                    <li>Average membership duration: 18 months</li>
+                    <li>Average monthly revenue per user: ₹12,000</li>
+                    <li>LTV: ₹216,000 per customer</li>
+                    <li>Customer acquisition cost: ₹3,600</li>
+                    <li>LTV:CAC ratio: 60:1 (significantly above industry average)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Financial Projections -->
+        <div class="tab-content" id="financials">
+            <div class="card">
+                <h2><i class="fas fa-chart-line"></i> Financial Projections</h2>
+                <p>Conservative growth projections based on market analysis and pilot program results.</p>
+                
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                
+                <table>
+                    <tr>
+                        <th>FINANCIAL METRIC</th>
+                        <th>YEAR 1</th>
+                        <th>YEAR 2</th>
+                        <th>YEAR 3</th>
+                    </tr>
+                    <tr>
+                        <td>REVENUE</td>
+                        <td><span class="currency">₹1.5 Cr</span></td>
+                        <td><span class="currency">₹7.2 Cr</span></td>
+                        <td><span class="currency">₹30 Cr</span></td>
+                    </tr>
+                    <tr>
+                        <td>EXPENSES</td>
+                        <td><span class="currency">₹2.8 Cr</span></td>
+                        <td><span class="currency">₹4.5 Cr</span></td>
+                        <td><span class="currency">₹12 Cr</span></td>
+                    </tr>
+                    <tr>
+                        <td>NET PROFIT/LOSS</td>
+                        <td><span class="currency">(₹1.3 Cr)</span></td>
+                        <td><span class="currency">₹2.7 Cr</span></td>
+                        <td><span class="currency">₹18 Cr</span></td>
+                    </tr>
+                    <tr>
+                        <td>USER BASE</td>
+                        <td>700</td>
+                        <td>2,500</td>
+                        <td>10,000</td>
+                    </tr>
+                </table>
+                
+                <h3>Key Assumptions</h3>
+                <ul>
+                    <li>5% monthly growth in subscriber base</li>
+                    <li>70% customer retention rate</li>
+                    <li>30% month-over-month growth in partner spaces</li>
+                    <li>15% monthly increase in corporate clients</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Project Milestones -->
+        <div class="tab-content" id="milestones">
+            <div class="card">
+                <h2><i class="fas fa-map-marked-alt"></i> Project Milestones</h2>
+                <p>Clear roadmap aligned with ELEVATE grant tranches and business objectives.</p>
+                
+                <h3>Milestone 1: Foundation (First 6 Months)</h3>
+                <ul>
+                    <li>Complete platform development and testing</li>
+                    <li>Onboard 50+ quality space partners in Bengaluru</li>
+                    <li>Acquire first 1,000 active users</li>
+                    <li>Generate ₹50 lakhs in revenue</li>
+                    <li>Establish brand recognition in target market</li>
+                </ul>
+                
+                <h3>Milestone 2: Scaling (Next 6 Months)</h3>
+                <ul>
+                    <li>Expand to 3 additional cities (Hyderabad, Pune, Chennai)</li>
+                    <li>Grow user base to 2,500+ active members</li>
+                    <li>Achieve monthly revenue of ₹1 Cr</li>
+                    <li>Launch corporate membership program</li>
+                    <li>Develop and implement advanced AI matching algorithm</li>
+                </ul>
+                
+                <h3>Long-term Vision</h3>
+                <ul>
+                    <li>Year 3: Expand to 10+ cities across India</li>
+                    <li>Year 4: International expansion to Southeast Asia</li>
+                    <li>Year 5: IPO preparation and public listing</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Total Budget -->
+        <div class="tab-content" id="budget">
+            <div class="card">
+                <h2><i class="fas fa-wallet"></i> Total Budget</h2>
+                <p>Requesting ₹50 Lakhs grant funding from ELEVATE program with detailed allocation plan.</p>
+                
+                <table>
+                    <tr>
+                        <th>CATEGORY</th>
+                        <th>AMOUNT (₹)</th>
+                        <th>PERCENTAGE</th>
+                        <th>UTILIZATION</th>
+                    </tr>
+                    <tr>
+                        <td>Product Development/R&D</td>
+                        <td>20,00,000</td>
+                        <td>40%</td>
+                        <td>Platform enhancements, mobile app development, feature additions</td>
+                    </tr>
+                    <tr>
+                        <td>Salaries</td>
+                        <td>10,00,000</td>
+                        <td>20%</td>
+                        <td>Key technical personnel: 2 developers, 1 UX designer</td>
+                    </tr>
+                    <tr>
+                        <td>Outsourcing</td>
+                        <td>10,00,000</td>
+                        <td>20%</td>
+                        <td>Specialized services: IoT integration, security audit, legal compliance</td>
+                    </tr>
+                    <tr>
+                        <td>Marketing</td>
+                        <td>5,00,000</td>
+                        <td>10%</td>
+                        <td>Digital campaigns, content creation, industry event participation</td>
+                    </tr>
+                    <tr>
+                        <td>Admin Costs</td>
+                        <td>5,00,000</td>
+                        <td>10%</td>
+                        <td>Office space, utilities, software licenses, operational expenses</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOTAL</strong></td>
+                        <td><strong>50,00,000</strong></td>
+                        <td><strong>100%</strong></td>
+                        <td></td>
+                    </tr>
+                </table>
+                
+                <h3>Additional Funding</h3>
+                <p>Seeking ₹9 Crore additional investment for 27% equity to complement grant funding and accelerate growth.</p>
+                
+                <h3>Expected Outcomes</h3>
+                <ul>
+                    <li>10,000+ users within 3 years</li>
+                    <li>₹30 Cr annual revenue by Year 3</li>
+                    <li>500+ direct and indirect jobs created</li>
+                    <li>10,000+ tons of CO2 emissions reduced annually</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="particles"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const loadingBar = document.getElementById("loadingBar");
+            const loadingStatus = document.getElementById("loadingStatus");
+            const loadingScreen = document.getElementById("loadingScreen");
+            const mainContent = document.getElementById("mainContent");
+
+            // --- Loading Animation ---
+            const statuses = [
+                "Calibrating workspace matching algorithm...",
+                "Syncing with partner locations...",
+                "Initializing community features...",
+                "Finalizing... Welcome to CLUBICLES!"
+            ];
+            let statusIndex = 0;
+            loadingBar.style.width = "100%";
+
+            const statusInterval = setInterval(() => {
+                statusIndex++;
+                if (statusIndex < statuses.length) {
+                    loadingStatus.innerText = statuses[statusIndex];
+                } else {
+                    clearInterval(statusInterval);
+                }
+            }, 750);
+
+            setTimeout(() => {
+                loadingScreen.style.opacity = "0";
+                mainContent.style.display = "block";
+                setTimeout(() => {
+                    loadingScreen.style.display = "none";
+                    mainContent.style.opacity = "1";
+                    initializeCharts();
+                }, 1000);
+            }, 3500);
+
+            // --- Tab Functionality ---
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.tab;
+                    switchTab(target);
+                });
+            });
+
+            window.switchTab = (target) => {
+                 tabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.style.color = t.dataset.color;
+                });
+                tabContents.forEach(tc => {
+                    tc.classList.remove('active');
+                });
+
+                const activeTab = document.querySelector(`.tab[data-tab="${target}"]`);
+                const activeContent = document.getElementById(target);
+
+                activeTab.classList.add('active');
+                activeTab.style.color = 'var(--white)';
+                activeContent.classList.add('active');
+
+                if (target === 'financials') {
+                    initializeCharts();
+                }
+            }
+
+            // --- Chart Initialization ---
+            let revenueChartInstance;
+            function initializeCharts() {
+                const ctx = document.getElementById('revenueChart');
+                if (!ctx) return;
+                if (revenueChartInstance) {
+                    revenueChartInstance.destroy();
+                }
+                revenueChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Year 1', 'Year 2', 'Year 3'],
+                        datasets: [{
+                            label: 'Revenue (in Cr)',
+                            data: [1.5, 7.2, 30],
+                            backgroundColor: 'rgba(69, 222, 16, 0.5)',
+                            borderColor: 'rgba(69, 222, 16, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Users',
+                            data: [0.07, 0.25, 1],
+                            backgroundColor: 'rgba(0, 176, 240, 0.5)',
+                            borderColor: 'rgba(0, 176, 240, 1)',
+                            borderWidth: 1,
+                            type: 'line',
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: 'white'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: 'white' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                title: {
+                                    display: true,
+                                    text: 'Revenue (₹ Cr)',
+                                    color: 'white'
+                                }
+                            },
+                            y1: {
+                                position: 'right',
+                                beginAtZero: true,
+                                ticks: { color: 'white' },
+                                grid: { display: false },
+                                title: {
+                                    display: true,
+                                    text: 'Users (Thousands)',
+                                    color: 'white'
+                                }
+                            },
+                            x: {
+                                ticks: { color: 'white' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
