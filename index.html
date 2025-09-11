@@ -387,6 +387,8 @@
             border-collapse: collapse;
             margin: 20px 0;
             font-size: 1rem;
+            overflow-x: auto;
+            display: block;
         }
         
         th, td {
@@ -414,6 +416,15 @@
             margin-top: 5px;
         }
         
+        .source a {
+            color: var(--neon-blue);
+            text-decoration: none;
+        }
+        
+        .source a:hover {
+            text-decoration: underline;
+        }
+        
         .mvp-demo {
             text-align: center;
             margin: 30px 0;
@@ -437,6 +448,108 @@
             box-shadow: 0 8px 20px rgba(143, 0, 255, 0.7);
         }
         
+        /* Dashboard View */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .dashboard-card {
+            background: rgba(40, 40, 60, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--accent);
+            text-align: center;
+        }
+        
+        .dashboard-card h4 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .dashboard-value {
+            font-size: 2rem;
+            color: var(--neon-green);
+            margin: 10px 0;
+        }
+        
+        .membership-visual {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px solid var(--accent);
+        }
+        
+        .membership-visual h3 {
+            color: var(--white);
+            border: none;
+            margin-bottom: 15px;
+        }
+        
+        .membership-steps {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: var(--dark-bg);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .step-text {
+            text-align: center;
+            font-size: 0.9rem;
+            max-width: 120px;
+        }
+        
+        .arrow {
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+        
+        .pricing-table {
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .pricing-table th {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .pricing-table tr:nth-child(even) {
+            background: rgba(50, 50, 70, 0.5);
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 100%;
+            margin: 30px 0;
+            height: 300px;
+        }
+        
         /* Responsive */
         @media (max-width: 1024px) {
             .tabs {
@@ -451,6 +564,10 @@
             
             .clubicles-logo { font-size: 3rem; }
             .tagline { font-size: 1.3rem; }
+            
+            table {
+                display: table;
+            }
         }
 
         @media (max-width: 768px) {
@@ -462,6 +579,15 @@
             
             .clubicles-logo { font-size: 2.5rem; }
             .card h2 { font-size: 1.5rem; }
+            
+            .membership-steps {
+                flex-direction: column;
+            }
+            
+            .arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
         }
         
         @media (max-width: 480px) {
@@ -473,6 +599,11 @@
             
             .clubicles-logo { font-size: 2rem; }
             .card h2 { font-size: 1.3rem; }
+            
+            table, th, td {
+                font-size: 0.8rem;
+                padding: 5px;
+            }
         }
     </style>
 </head>
@@ -518,15 +649,15 @@
                 <div class="grid">
                     <div class="value-card">
                         <h4>Space Inefficiency</h4>
-                        <p>40% of commercial space sits empty during business hours<span class="source">(JLL Research, 2023)</span></p>
+                        <p>40% of commercial space sits empty during business hours<span class="source">(<a href="https://www.jll.co.in/en/trends-and-insights/research" target="_blank">JLL Research, 2023</a>)</span></p>
                     </div>
                     <div class="value-card">
                         <h4>High Costs</h4>
-                        <p>Traditional office space costs businesses ₹15,000-₹25,000 per employee annually<span class="source">(CBRE, 2023)</span></p>
+                        <p>Traditional office space costs businesses ₹15,000-₹25,000 per employee annually<span class="source">(<a href="https://www.cbre.com/research-and-reports" target="_blank">CBRE, 2023</a>)</span></p>
                     </div>
                     <div class="value-card">
                         <h4>Lack of Flexibility</h4>
-                        <p>82% of freelancers report difficulty finding affordable, professional workspaces<span class="source">(FlexJobs Survey, 2023)</span></p>
+                        <p>82% of freelancers report difficulty finding affordable, professional workspaces<span class="source">(<a href="https://www.flexjobs.com/blog/post/freelancer-survey-2023/" target="_blank">FlexJobs Survey, 2023</a>)</span></p>
                     </div>
                 </div>
                 
@@ -535,11 +666,19 @@
                     <li>Traditional co-working spaces require long-term commitments and are often centrally located, increasing commute times</li>
                     <li>Remote work leads to isolation and reduced collaboration</li>
                     <li>Cafés and home offices lack professional infrastructure and networking opportunities</li>
-                    <li>Existing solutions don't effectively utilize the 15M+ sq ft of underutilized commercial space in Bengaluru alone<span class="source">(Knight Frank Research)</span></li>
+                    <li>Existing solutions don't effectively utilize the 15M+ sq ft of underutilized commercial space in Bengaluru alone<span class="source">(<a href="https://www.knightfrank.com/research" target="_blank">Knight Frank Research</a>)</span></li>
                 </ul>
                 
                 <h3>Environmental Impact</h3>
-                <p>Daily commuting contributes significantly to urban carbon emissions, with the average professional generating 2.5 tons of CO2 annually from travel alone<span class="source">(CEEW Study, 2023)</span>.</p>
+                <p>Daily commuting contributes significantly to urban carbon emissions, with the average professional generating 2.5 tons of CO2 annually from travel alone<span class="source">(<a href="https://www.ceew.in/publications" target="_blank">CEEW Study, 2023</a>)</span>.</p>
+                
+                <h3>Deciding Factors</h3>
+                <ul>
+                    <li><strong>Commute Time:</strong> 67% of professionals cite commute as their primary workspace decision factor</li>
+                    <li><strong>Cost:</strong> 89% of freelancers prioritize affordability in workspace selection</li>
+                    <li><strong>Flexibility:</strong> 76% of remote workers value flexible cancellation policies</li>
+                    <li><strong>Professional Environment:</strong> 82% need reliable internet and meeting facilities</li>
+                </ul>
             </div>
         </div>
         
@@ -549,29 +688,51 @@
                 <h2><i class="fas fa-lightbulb"></i> Solution - The CLUBICLES Innovation</h2>
                 <p>CLUBICLES revolutionizes workspace access through a hyperlocal, subscription-based platform that connects professionals with underutilized spaces.</p>
                 
-                <div class="grid">
-                    <div class="value-card">
+                <div class="dashboard">
+                    <div class="dashboard-card">
                         <h4>Space Aggregation</h4>
                         <p>We aggregate small and underutilized workspaces into a seamless network</p>
                     </div>
-                    <div class="value-card">
+                    <div class="dashboard-card">
                         <h4>Smart Matching</h4>
-                        <p>AI-powered algorithm matches professionals with ideal workspaces based on preferences and location</p>
+                        <p>AI-powered algorithm matches professionals with ideal workspaces</p>
                     </div>
-                    <div class="value-card">
+                    <div class="dashboard-card">
                         <h4>Flexible Access</h4>
                         <p>Hourly, daily, weekly, or monthly plans with no long-term commitments</p>
                     </div>
+                    <div class="dashboard-card">
+                        <h4>Virtual PC Setup</h4>
+                        <p>For monthly/yearly members - access your workspace from any device</p>
+                    </div>
                 </div>
                 
-                <h3>Unique Differentiators</h3>
-                <ul>
-                    <li><span class="highlight">Hyperlocal Network:</span> 15-minute workspace access versus industry average of 45+ minutes</li>
-                    <li><span class="highlight">Community Ownership:</span> Members can invest and receive a share of profits</li>
-                    <li><span class="highlight">Sustainability Focus:</span> 50% reduction in CO2 emissions by reducing commute times</li>
-                    <li><span class="highlight">Direction-Based Booking:</span> Unique visual interface showing available spaces by compass direction</li>
-                    <li><span class="highlight">Profit Sharing:</span> Space owners keep 70% of revenue, creating win-win partnerships</li>
-                </ul>
+                <h3>Unique Selling Propositions</h3>
+                <div class="membership-visual">
+                    <h3>🔥 CLUBICLES MEMBERSHIP - ₹100001</h3>
+                    <div class="membership-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-text">Share your Location + Pin Code</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-text">Build your Local Co-working Hub</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-text">Profit Share Starts When Setup is Live</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-text">Withdraw Anytime</div>
+                        </div>
+                    </div>
+                    <p>SMART COLLABORATION. FUTURE COMMUNITY.</p>
+                </div>
                 
                 <h3>Target Customers</h3>
                 <div class="grid">
@@ -599,10 +760,20 @@
                 
                 <h3>Current Stage: MVP / Early Traction</h3>
                 <ul>
-                    <li>Platform architecture and booking system developed</li>
-                    <li>Initial partnerships with 15+ spaces in Bengaluru</li>
-                    <li>Beta testing with 200+ users</li>
-                    <li>First revenue generated through pilot program</li>
+                    <li>Web Platform architecture and booking system developed</li>
+                    <li>Looking for Initial partnerships with 15+ spaces in Bengaluru</li>
+                    <li>Looking for Beta testing with 200+ users</li>
+                    <li>Work in progress for First revenue generated through pilot program</li>
+                </ul>
+                
+                <h3>AI Matching Algorithm</h3>
+                <p>Our proprietary AI algorithm determines optimal workspace matches based on:</p>
+                <ul>
+                    <li><strong>User Preferences:</strong> Noise level, amenities, workspace type</li>
+                    <li><strong>Location Intelligence:</strong> Proximity, traffic patterns, transportation</li>
+                    <li><strong>Activity Patterns:</strong> Time of day, duration, collaboration needs</li>
+                    <li><strong>Community Building:</strong> Matching professionals with complementary skills</li>
+                    <li><strong>Real-time Availability:</strong> IoT sensors provide live occupancy data</li>
                 </ul>
                 
                 <div class="mvp-demo">
@@ -616,7 +787,7 @@
                 <div class="grid">
                     <div class="value-card">
                         <h4>Platform Development</h4>
-                        <p>Web and mobile applications with real-time booking system</p>
+                        <p>Web application with real-time booking system</p>
                     </div>
                     <div class="value-card">
                         <h4>Occupancy Tracking</h4>
@@ -637,17 +808,17 @@
                     </tr>
                     <tr>
                         <td>MVP Launch</td>
-                        <td>Q2 2024</td>
+                        <td>Q4 2025</td>
                         <td>Basic booking, payment integration, partner onboarding</td>
                     </tr>
                     <tr>
                         <td>Feature Expansion</td>
-                        <td>Q4 2024</td>
+                        <td>Q2 2026</td>
                         <td>Community features, event management, advanced analytics</td>
                     </tr>
                     <tr>
                         <td>Scale</td>
-                        <td>2025</td>
+                        <td>Q4 2026</td>
                         <td>Multi-city expansion, corporate solutions, API integrations</td>
                     </tr>
                 </table>
@@ -693,7 +864,14 @@
                 </ul>
                 
                 <h3>Alignment with UN SDGs</h3>
-                <p>CLUBICLES directly contributes to Sustainable Development Goals 8 (Decent Work), 9 (Industry Innovation), 11 (Sustainable Cities), and 13 (Climate Action).</p>
+                <p>CLUBICLES directly contributes to Sustainable Development Goals:</p>
+                <ul>
+                    <li><strong>SDG 8:</strong> Decent Work and Economic Growth - Creating flexible work opportunities</li>
+                    <li><strong>SDG 9:</strong> Industry, Innovation and Infrastructure - Innovative workspace solutions</li>
+                    <li><strong>SDG 6:</strong> Clean Water and Sanitation - Reducing water usage through efficient space utilization</li>
+                    <li><strong>SDG 11:</strong> Sustainable Cities and Communities - Reducing urban congestion</li>
+                    <li><strong>SDG 13:</strong> Climate Action - Lowering carbon emissions from commuting</li>
+                </ul>
             </div>
         </div>
         
@@ -703,23 +881,32 @@
                 <h2><i class="fas fa-chart-bar"></i> Market Landscape</h2>
                 <p>The global co-working market presents substantial growth opportunities:</p>
                 
-                <div class="grid">
-                    <div class="value-card">
-                        <h4>Total Addressable Market (TAM)</h4>
-                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">$29.7B</span></p>
-                        <p style="text-align: center;">Global co-working market (2023)<span class="source">(Global Market Insights)</span></p>
-                    </div>
-                    <div class="value-card">
-                        <h4>Serviceable Available Market (SAM)</h4>
-                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">$6.2B</span></p>
-                        <p style="text-align: center;">Indian flexible workspace market<span class="source">(JLL Report, 2023)</span></p>
-                    </div>
-                    <div class="value-card">
-                        <h4>Serviceable Obtainable Market (SOM)</h4>
-                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">$125M</span></p>
-                        <p style="text-align: center;">Year 1-3 target market<span class="source">(CLUBICLES Projections)</span></p>
-                    </div>
-                </div>
+                <table>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Global (USD)</th>
+                        <th>India (USD)</th>
+                        <th>India (₹ Crores)</th>
+                    </tr>
+                    <tr>
+                        <td>Total Addressable Market (TAM)</td>
+                        <td>$29.7B<span class="source">(<a href="https://www.gminsights.com/industry-analysis/coworking-spaces-market" target="_blank">Global Market Insights, 2023</a>)</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Serviceable Available Market (SAM)</td>
+                        <td>-</td>
+                        <td>$6.2B</td>
+                        <td>₹51,500 Cr<span class="source">(<a href="https://www.jll.co.in/en/trends-and-insights/research" target="_blank">JLL Report, 2023</a>)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Serviceable Obtainable Market (SOM)</td>
+                        <td>-</td>
+                        <td>$125M</td>
+                        <td>₹1,037 Cr<span class="source">(CLUBICLES Projections)</span></td>
+                    </tr>
+                </table>
                 
                 <h3>Competitive Analysis</h3>
                 <table>
@@ -752,7 +939,7 @@
                 
                 <h3>Market Growth Drivers</h3>
                 <ul>
-                    <li>10.6% CAGR in global co-working market (2023-2032)<span class="source">(Market Research Future)</span></li>
+                    <li>10.6% CAGR in global co-working market (2023-2032)<span class="source">(<a href="https://www.marketresearchfuture.com/reports/coworking-spaces-market-1952" target="_blank">Market Research Future</a>)</span></li>
                     <li>30% of Indian workforce now remote/hybrid</li>
                     <li>15M+ freelancers in India seeking flexible workspaces</li>
                     <li>Post-pandemic shift toward distributed work models</li>
@@ -813,24 +1000,39 @@
                 <h2><i class="fas fa-money-bill-wave"></i> Revenue Model</h2>
                 <p>CLUBICLES generates revenue through multiple streams with a focus on subscription models.</p>
                 
-                <h3>Pricing Strategy</h3>
-                <div class="grid">
-                    <div class="value-card">
-                        <h4>3-Hour Pass</h4>
-                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">₹1001</span></p>
-                        <p style="text-align: center;">Casual users and trial customers</p>
-                    </div>
-                    <div class="value-card">
-                        <h4>Monthly Membership</h4>
-                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">₹10,001</span></p>
-                        <p style="text-align: center;">Regular users (~20% discount vs daily rate)</p>
-                    </div>
-                    <div class="value-card">
-                        <h4>Annual Membership</h4>
-                        <p style="font-size: 1.8rem; text-align: center; color: var(--neon-green);"><span class="currency">₹1,00,001</span></p>
-                        <p style="text-align: center;">Dedicated users (~30% discount vs monthly)</p>
-                    </div>
-                </div>
+                <h3>Pricing Structure</h3>
+                <table class="pricing-table">
+                    <tr>
+                        <th>Plan</th>
+                        <th>Price (₹)</th>
+                        <th>Target Audience</th>
+                        <th>Features</th>
+                    </tr>
+                    <tr>
+                        <td>Hourly</td>
+                        <td>101</td>
+                        <td>Casual users, short meetings</td>
+                        <td>Basic workspace access, Wi-Fi</td>
+                    </tr>
+                    <tr>
+                        <td>Daily</td>
+                        <td>1,001</td>
+                        <td>Day travelers, project work</td>
+                        <td>All amenities, meeting room access (2 hrs)</td>
+                    </tr>
+                    <tr>
+                        <td>Monthly</td>
+                        <td>10,001</td>
+                        <td>Regular remote workers</td>
+                        <td>20% discount, virtual PC setup, meeting room access (10 hrs)</td>
+                    </tr>
+                    <tr>
+                        <td>Annual</td>
+                        <td>100,001</td>
+                        <td>Dedicated professionals</td>
+                        <td>30% discount, premium support, profit sharing, virtual PC setup</td>
+                    </tr>
+                </table>
                 
                 <h3>Revenue Streams</h3>
                 <ul>
@@ -910,6 +1112,10 @@
                 <h2><i class="fas fa-map-marked-alt"></i> Project Milestones</h2>
                 <p>Clear roadmap aligned with ELEVATE grant tranches and business objectives.</p>
                 
+                <div class="chart-container">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+                
                 <h3>Milestone 1: Foundation (First 6 Months)</h3>
                 <ul>
                     <li>Complete platform development and testing</li>
@@ -941,7 +1147,7 @@
         <div class="tab-content" id="budget">
             <div class="card">
                 <h2><i class="fas fa-wallet"></i> Total Budget</h2>
-                <p>Requesting ₹50 Lakhs grant funding from ELEVATE program with detailed allocation plan.</p>
+                <p>Requesting ₹70 Lakhs grant funding from ELEVATE program with detailed allocation plan.</p>
                 
                 <table>
                     <tr>
@@ -951,38 +1157,44 @@
                         <th>UTILIZATION</th>
                     </tr>
                     <tr>
-                        <td>Product Development/R&D</td>
-                        <td>20,00,000</td>
-                        <td>40%</td>
-                        <td>Platform enhancements, mobile app development, feature additions</td>
+                        <td>Technology Development</td>
+                        <td>21,00,000</td>
+                        <td>30%</td>
+                        <td>Platform development, mobile apps, API integrations</td>
                     </tr>
                     <tr>
-                        <td>Salaries</td>
-                        <td>10,00,000</td>
-                        <td>20%</td>
-                        <td>Key technical personnel: 2 developers, 1 UX designer</td>
-                    </tr>
-                    <tr>
-                        <td>Outsourcing</td>
-                        <td>10,00,000</td>
-                        <td>20%</td>
-                        <td>Specialized services: IoT integration, security audit, legal compliance</td>
-                    </tr>
-                    <tr>
-                        <td>Marketing</td>
-                        <td>5,00,000</td>
+                        <td>Domain & Security</td>
+                        <td>7,00,000</td>
                         <td>10%</td>
-                        <td>Digital campaigns, content creation, industry event participation</td>
+                        <td>Premium domains, SSL certificates, security audits</td>
                     </tr>
                     <tr>
-                        <td>Admin Costs</td>
-                        <td>5,00,000</td>
+                        <td>Team Salaries (1 Year)</td>
+                        <td>14,00,000</td>
+                        <td>20%</td>
+                        <td>Core team of 5 (2 devs, 1 designer, 1 sales, 1 ops)</td>
+                    </tr>
+                    <tr>
+                        <td>Marketing & Branding</td>
+                        <td>14,00,000</td>
+                        <td>20%</td>
+                        <td>Website, branding, initial marketing campaigns</td>
+                    </tr>
+                    <tr>
+                        <td>Legal & Compliance</td>
+                        <td>7,00,000</td>
                         <td>10%</td>
-                        <td>Office space, utilities, software licenses, operational expenses</td>
+                        <td>Business registration, contracts, legal fees</td>
+                    </tr>
+                    <tr>
+                        <td>Miscellaneous</td>
+                        <td>7,00,000</td>
+                        <td>10%</td>
+                        <td>Office space, hosting, other operational costs</td>
                     </tr>
                     <tr>
                         <td><strong>TOTAL</strong></td>
-                        <td><strong>50,00,000</strong></td>
+                        <td><strong>70,00,000</strong></td>
                         <td><strong>100%</strong></td>
                         <td></td>
                     </tr>
@@ -1066,78 +1278,147 @@
                 activeTab.style.color = 'var(--white)';
                 activeContent.classList.add('active');
 
-                if (target === 'financials') {
+                if (target === 'financials' || target === 'milestones') {
                     initializeCharts();
                 }
             }
 
             // --- Chart Initialization ---
-            let revenueChartInstance;
+            let revenueChartInstance, timelineChartInstance;
             function initializeCharts() {
+                // Revenue Chart
                 const ctx = document.getElementById('revenueChart');
-                if (!ctx) return;
-                if (revenueChartInstance) {
-                    revenueChartInstance.destroy();
-                }
-                revenueChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Year 1', 'Year 2', 'Year 3'],
-                        datasets: [{
-                            label: 'Revenue (in Cr)',
-                            data: [1.5, 7.2, 30],
-                            backgroundColor: 'rgba(69, 222, 16, 0.5)',
-                            borderColor: 'rgba(69, 222, 16, 1)',
-                            borderWidth: 1
-                        }, {
-                            label: 'Users',
-                            data: [0.07, 0.25, 1],
-                            backgroundColor: 'rgba(0, 176, 240, 0.5)',
-                            borderColor: 'rgba(0, 176, 240, 1)',
-                            borderWidth: 1,
-                            type: 'line',
-                            yAxisID: 'y1'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                labels: {
-                                    color: 'white'
-                                }
-                            }
+                if (ctx) {
+                    if (revenueChartInstance) {
+                        revenueChartInstance.destroy();
+                    }
+                    revenueChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Year 1', 'Year 2', 'Year 3'],
+                            datasets: [{
+                                label: 'Revenue (in Cr)',
+                                data: [1.5, 7.2, 30],
+                                backgroundColor: 'rgba(69, 222, 16, 0.5)',
+                                borderColor: 'rgba(69, 222, 16, 1)',
+                                borderWidth: 1
+                            }, {
+                                label: 'Users',
+                                data: [0.07, 0.25, 1],
+                                backgroundColor: 'rgba(0, 176, 240, 0.5)',
+                                borderColor: 'rgba(0, 176, 240, 1)',
+                                borderWidth: 1,
+                                type: 'line',
+                                yAxisID: 'y1'
+                            }]
                         },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { color: 'white' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                                title: {
-                                    display: true,
-                                    text: 'Revenue (₹ Cr)',
-                                    color: 'white'
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: 'white'
+                                    }
                                 }
                             },
-                            y1: {
-                                position: 'right',
-                                beginAtZero: true,
-                                ticks: { color: 'white' },
-                                grid: { display: false },
-                                title: {
-                                    display: true,
-                                    text: 'Users (Thousands)',
-                                    color: 'white'
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { color: 'white' },
+                                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                    title: {
+                                        display: true,
+                                        text: 'Revenue (₹ Cr)',
+                                        color: 'white'
+                                    }
+                                },
+                                y1: {
+                                    position: 'right',
+                                    beginAtZero: true,
+                                    ticks: { color: 'white' },
+                                    grid: { display: false },
+                                    title: {
+                                        display: true,
+                                        text: 'Users (Thousands)',
+                                        color: 'white'
+                                    }
+                                },
+                                x: {
+                                    ticks: { color: 'white' },
+                                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
                                 }
-                            },
-                            x: {
-                                ticks: { color: 'white' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
                             }
                         }
+                    });
+                }
+
+                // Timeline Chart
+                const timelineCtx = document.getElementById('timelineChart');
+                if (timelineCtx) {
+                    if (timelineChartInstance) {
+                        timelineChartInstance.destroy();
                     }
-                });
+                    timelineChartInstance = new Chart(timelineCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Platform Development', 'Partner Onboarding', 'User Acquisition', 'City Expansion', 'Corporate Program'],
+                            datasets: [{
+                                label: 'Milestone Timeline (Months)',
+                                data: [3, 6, 9, 12, 15],
+                                backgroundColor: [
+                                    'rgba(143, 0, 255, 0.7)',
+                                    'rgba(0, 112, 176, 0.7)',
+                                    'rgba(69, 222, 16, 0.7)',
+                                    'rgba(255, 105, 0, 0.7)',
+                                    'rgba(188, 19, 254, 0.7)'
+                                ],
+                                borderColor: [
+                                    'rgba(143, 0, 255, 1)',
+                                    'rgba(0, 112, 176, 1)',
+                                    'rgba(69, 222, 16, 1)',
+                                    'rgba(255, 105, 0, 1)',
+                                    'rgba(188, 19, 254, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false,
+                                    labels: {
+                                        color: 'white'
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Project Timeline (Cumulative Months)',
+                                    color: 'white'
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    ticks: { color: 'white' },
+                                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                    title: {
+                                        display: true,
+                                        text: 'Months',
+                                        color: 'white'
+                                    }
+                                },
+                                y: {
+                                    ticks: { color: 'white' },
+                                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                                }
+                            }
+                        }
+                    });
+                }
             }
         });
     </script>
